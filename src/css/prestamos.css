@@ -1,0 +1,117 @@
+.mis-prestamos {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.div-prestamos {
+    width: 100%;
+    padding: 30px 40px;
+    border-radius: 0.3rem;
+    margin: 15px 0px;
+    box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);
+}
+
+.div-prestamos .col-sm-6 b {
+    margin: 0;
+    display: block;
+    color: #112a65;
+}
+
+.Estado-Pago {
+    display: flex;
+}
+
+.Estado-Pago .En,
+.guion {
+    color: #Ff7800 !important;
+}
+
+.Aprobado {
+    color: #198754 !important;
+}
+
+.Rechazado {
+    color: #dc3545 !important;
+}
+
+.Abonado {
+    color: #198754 !important;
+}
+
+.div-prestamos .col-sm-6 p {
+    margin: 0;
+}
+
+.out-div-estado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.div-prestamos p{
+   font-weight: bold;
+}
+p label{
+    margin: 0;
+    font-weight: 400;
+}
+.in-div-estado button{
+    width: 160px;
+}
+.titulo-Estado button{
+    background-color: #198754;
+    border-color: #198754;
+}
+.titulo-Estado button:hover{
+    background-color: #0c6b3f;
+    border-color: #0c6b3f;
+}
+.titulo-Estado button:focus{
+    background-color: #0c6b3f;
+    border-color: #0c6b3f;
+}
+
+.Estado-Pago button{
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.Estado-Pago button:hover{
+    background-color: #bd1e2e;
+    border-color: #bd1e2e;
+}
+.Estado-Pago button:focus{
+    background-color: #bd1e2e;
+    border-color: #bd1e2e;
+}
+
+.nohay{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.nohay .fas{
+    font-size: 3rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.7;
+}
+@media (max-width: 575px) {
+    .titulo-Estado {
+        margin-top: 20px;
+    }
+    .in-div-estado{
+        width: 100%;
+    }
+    .Estado-Pago{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .out-div-estado {
+        display: flex;
+        align-items: center;
+        justify-content:center;
+    }
+
+}

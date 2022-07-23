@@ -1,0 +1,60 @@
+.nav-scroller {
+  position: relative;
+  z-index: 2;
+  overflow-y: hidden;
+}
+
+.div-op{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.titulo-op{
+  color: #112a65;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.card-op .item {
+  border-radius: 10px;
+  margin: 0px 30px;
+  width: 200px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0px;
+}
+
+.item:hover {
+  transform: scale(0.95);
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+
+
+.item--1 {
+  background: #ff7800;
+  color: #fff !important;
+  text-align: center;
+  text-decoration: none;
+}
+
+.quantity {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.text {
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.fa{
+  font-size: 2.5rem;
+  margin-bottom: 7px;
+}
