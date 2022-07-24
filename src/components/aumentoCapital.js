@@ -1,11 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../Firebase/AuthContext';
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import FirebaseApp from "../Firebase/FirebaseApp";
+const db = getFirestore(FirebaseApp);
 
 const AumentoCapital = () => {
-    const { SolicitudGerente, listarSolicitudGerente, AumentarCapital, RechazarCapital } = useAuth()
+    const { AumentarCapital, RechazarCapital } = useAuth()
+    
+    const [SolicitudGerente, setSolicitudGerente] = useState([]);
+
     useEffect(() => {
+
+        function listarSolicitudGerente() {
+            const info = [];
+
+            onSnapshot(collection(db, "solicitud capital"), (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().estado === true) {
+                        info.push({ ...doc.data(), id: doc.id })
+                    }
+                });
+                setSolicitudGerente(info);
+            })
+        }
+
         listarSolicitudGerente()
+
     }, []);
+
+
     return (
         <div className="div-solicitud">
             <div className="container centrar">
@@ -34,10 +57,10 @@ const AumentoCapital = () => {
                                         <div className='in-div-estado'>
                                             <div className='in-div-estado'>
                                                 <div className="titulo-Estado centrar">
-                                                    <button className="centrar boton-login boton-login2 btn btn-primary" onClick={()=>AumentarCapital(info.id,info.monto)}>Aumentar Capital</button>
+                                                    <button className="centrar boton-login boton-login2 btn btn-primary" onClick={() => AumentarCapital(info.id, info.monto)}>Aumentar Capital</button>
                                                 </div>
                                                 <div className="Estado-Pago centrar">
-                                                    <button className="centrar boton-login boton-login2 btn btn-primary mt-3" onClick={()=>RechazarCapital(info.uid,info.nombre,info.monto,info.id)}>Rechazar</button>
+                                                    <button className="centrar boton-login boton-login2 btn btn-primary mt-3" onClick={() => RechazarCapital(info.uid, info.nombre, info.monto, info.id)}>Rechazar</button>
                                                 </div>
                                             </div>
                                         </div>

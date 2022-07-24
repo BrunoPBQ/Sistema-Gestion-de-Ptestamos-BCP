@@ -1,13 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import '../css/prestamos.css'
-import { useAuth } from '../Firebase/AuthContext';
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import FirebaseApp from "../Firebase/FirebaseApp";
+
+const db = getFirestore(FirebaseApp);
 
 const MisPrestamos = () => {
-    const { PrestamosxUser, DatosPrestamosxUser } = useAuth()
+    
     let { uid } = useParams();
+    const [PrestamosxUser, setPrestamosxUser] = useState([]);
+
+
     useEffect(() => {
+        function DatosPrestamosxUser(uid) {
+            const info = [];
+            onSnapshot(collection(db, "prestamos"), (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (uid === doc.data().uid) {
+                        info.push({ ...doc.data(), id: doc.id })
+                    }
+                });
+                setPrestamosxUser(info)
+            })
+        }
+
         DatosPrestamosxUser(uid)
+
     }, []);
 
     return (

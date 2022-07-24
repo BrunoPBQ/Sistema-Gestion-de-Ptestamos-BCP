@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../Firebase/AuthContext';
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import FirebaseApp from "../Firebase/FirebaseApp";
+const db = getFirestore(FirebaseApp);
 
 const ConsultaPrestamos = () => {
-    const { PrestamosPendientes, listarPrestamosPendientes, cambiarEstadoPrestamo, RechazarPrestamo } = useAuth()
+    const { cambiarEstadoPrestamo, RechazarPrestamo } = useAuth()
+
+    const [PrestamosPendientes, setPrestamosPendientes] = useState([]);
 
     function Aprobar(monto, id, uid, nombre) {
         cambiarEstadoPrestamo(monto, id, uid, nombre)
@@ -10,9 +15,30 @@ const ConsultaPrestamos = () => {
     function Rechazar(id) {
         RechazarPrestamo(id)
     }
+
+
     useEffect(() => {
+
+        function listarPrestamosPendientes() {
+            const info = [];
+
+            onSnapshot(collection(db, "prestamos"), (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if ("En proceso" === doc.data().estado) {
+                        info.push({ ...doc.data(), id: doc.id })
+                    }
+                    if ("En observación" === doc.data().estado) {
+                        info.push({ ...doc.data(), id: doc.id })
+                    }
+                });
+                setPrestamosPendientes(info);
+            })
+        }
+
         listarPrestamosPendientes()
+
     }, []);
+
 
     return (
         <div className="div-solicitud">
@@ -58,7 +84,7 @@ const ConsultaPrestamos = () => {
                                                 <button className="centrar boton-login boton-login2 btn btn-primary " onClick={() => Aprobar(info.monto, info.id, info.uid, info.nombre)}>Aprobar</button>
                                             </div>
                                             <div className="Estado-Pago centrar">
-                                                <button className="centrar boton-login boton-login2 btn btn-primary mt-3" onClick={()=>{Rechazar(info.id)}}>Rechazar</button>
+                                                <button className="centrar boton-login boton-login2 btn btn-primary mt-3" onClick={() => { Rechazar(info.id) }}>Rechazar</button>
                                             </div>
                                         </div>
                                     </div>

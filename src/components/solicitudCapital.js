@@ -1,12 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../Firebase/AuthContext';
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import FirebaseApp from "../Firebase/FirebaseApp";
+const db = getFirestore(FirebaseApp);
 
 const SolicitudCapital = () => {
-    const { SolictudCapital, listarSolicitudCapital,SolicitudRealizada } = useAuth()
+    const { SolicitudRealizada } = useAuth()
+    const [SolictudCapital, setSolictudCapital] = useState([]);
+
     useEffect(() => {
+
+        function listarSolicitudCapital() {
+            const info = [];
+    
+            onSnapshot(collection(db, "solicitud capital"), (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().estado === false) {
+                        info.push({ ...doc.data(), id: doc.id })
+                    }
+                });
+                setSolictudCapital(info);
+            })
+        }
+
         listarSolicitudCapital()
+
     }, []);
+
+    
     return (
         <div className="div-solicitud">
             <div className="container centrar">

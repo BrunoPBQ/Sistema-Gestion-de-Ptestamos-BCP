@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import React, { useContext, useState, useEffect } from 'react'
 import FirebaseApp from "./FirebaseApp";
-import { getFirestore, doc, getDocs, setDoc, collection, addDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDocs, setDoc, collection, addDoc, updateDoc } from "firebase/firestore";
 import Loader from "../components/Loader";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import Swal from 'sweetalert2';
@@ -37,10 +37,6 @@ export function AuthProvider({ children }) {
     const [Fecha, setFecha] = useState(null);
     const [Sexo, setSexo] = useState(null);
     const [Tipo, setTipo] = useState(null);
-    const [PrestamosxUser, setPrestamosxUser] = useState([]);
-    const [PrestamosPendientes, setPrestamosPendientes] = useState([]);
-    const [SolictudCapital, setSolictudCapital] = useState([]);
-    const [SolicitudGerente, setSolicitudGerente] = useState([]);
     const [Capital, setCapital] = useState(null);
     let navigate = useNavigate();
 
@@ -157,61 +153,6 @@ export function AuthProvider({ children }) {
                 setCapital(doc.data().capital)
             }
         });
-    }
-
-    function listarPrestamosPendientes() {
-        const info = [];
-
-        onSnapshot(collection(db, "prestamos"), (querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if ("En proceso" === doc.data().estado) {
-                    info.push({ ...doc.data(), id: doc.id })
-                }
-                if ("En observación" === doc.data().estado) {
-                    info.push({ ...doc.data(), id: doc.id })
-                }
-            });
-            setPrestamosPendientes(info);
-        })
-    }
-
-    function listarSolicitudCapital() {
-        const info = [];
-
-        onSnapshot(collection(db, "solicitud capital"), (querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if (doc.data().estado === false) {
-                    info.push({ ...doc.data(), id: doc.id })
-                }
-            });
-            setSolictudCapital(info);
-        })
-    }
-
-    function listarSolicitudGerente() {
-        const info = [];
-
-        onSnapshot(collection(db, "solicitud capital"), (querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if (doc.data().estado === true) {
-                    info.push({ ...doc.data(), id: doc.id })
-                }
-            });
-            setSolicitudGerente(info);
-        })
-    }
-
-
-    function DatosPrestamosxUser(uid) {
-        const info = [];
-        onSnapshot(collection(db, "prestamos"), (querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if (uid === doc.data().uid) {
-                    info.push({ ...doc.data(), id: doc.id })
-                }
-            });
-            setPrestamosxUser(info)
-        })
     }
 
     function subirSolicitudPrestamo(Nombre, Profesión, DNI, RUC, Ingresos, NombreComprobante, Comprobante, Celular, Monto) {
@@ -430,8 +371,6 @@ export function AuthProvider({ children }) {
                 setFecha(null);
                 setSexo(null);
                 setTipo(null);
-                setPrestamosxUser(null);
-                setPrestamosPendientes(null);
                 setCapital(null);
             }
         });
@@ -451,18 +390,10 @@ export function AuthProvider({ children }) {
         Sexo,
         Tipo,
         subirSolicitudPrestamo,
-        DatosPrestamosxUser,
-        PrestamosxUser,
-        listarPrestamosPendientes,
-        PrestamosPendientes,
         Capital,
         cambiarEstadoPrestamo,
         CambiarCapital,
-        listarSolicitudCapital,
-        SolictudCapital,
         SolicitudRealizada,
-        SolicitudGerente,
-        listarSolicitudGerente,
         AumentarCapital,
         RechazarCapital,
         RechazarPrestamo

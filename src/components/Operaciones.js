@@ -9,7 +9,7 @@ const Operaciones = () => {
         <section className='pt-4 pb-5'>
 
             <div className="container">
-                <h1 className='titulo-op pb-3'>Mis Operaciones</h1>
+                <h1 className='titulo-op pb-3'>Mis Operaciones {Tipo === "Usuario" ? <></> : <label> Cargo: {Tipo}</label>}</h1>
                 <div className="nav-scroller">
                     <div className="div-op">
                         <div className="card-op">
@@ -29,7 +29,7 @@ const Operaciones = () => {
                             <>
                                 <div className="card-op">
                                     <Link to={"consulta/prestamos"} className="item item--1">
-                                        <i className="fa fa-solid fa-envelope"></i>
+                                        <i className="fa fa-solid fa-file-circle-exclamation"></i>
                                         <span className="quantity">Prestamos Pendientes</span>
                                     </Link>
                                 </div>
@@ -42,7 +42,7 @@ const Operaciones = () => {
                             <>
                                 <div className="card-op">
                                     <Link to={"solicitud/capital"} className="item item--1">
-                                        <i className="fa fa-solid fa-envelope"></i>
+                                        <i className="fa fa-solid fa-file-arrow-up"></i>
                                         <span className="quantity">Solicitud de Capital</span>
                                     </Link>
                                 </div>
@@ -54,7 +54,7 @@ const Operaciones = () => {
                             <>
                                 <div className="card-op">
                                     <Link to={"consulta/capital"} className="item item--1">
-                                        <i className="fa fa-solid fa-circle-plus"></i>
+                                    <i className="fa fa-solid fa-sack-dollar"></i>
                                         <span className="quantity">Aumento de Capital</span>
                                     </Link>
                                 </div>
