@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import FirebaseApp from "./FirebaseApp";
 import { getFirestore, doc, getDocs, setDoc, collection, addDoc, updateDoc } from "firebase/firestore";
 import Loader from "../components/Loader";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 
@@ -156,30 +156,18 @@ export function AuthProvider({ children }) {
     }
 
     function subirSolicitudPrestamo(Nombre, Profesión, DNI, RUC, Ingresos, NombreComprobante, Comprobante, Celular, Monto) {
-        setloading(true)
         try {
+            setloading(true)
 
             const ComprobanteRef = ref(storage, `prestamos/${NombreComprobante}`)
 
-            //agregar datos de la solicitud de Prestamo
-            addDoc(collection(db, "prestamos"), {
-                nombre: Nombre,
-                profesión: Profesión,
-                dni: DNI,
-                ruc: RUC,
-                ingresos: Ingresos,
-                comprobante: NombreComprobante,
-                celular: Celular,
-                monto: Monto,
-                estado: "En proceso",
-                pago: "",
-                uid: currentUser
-            });
+            console.log(Comprobante);
             uploadBytes(ComprobanteRef, Comprobante)
                 .then(() => {
+                    setloading(false)
                     Swal.fire({
                         title: 'Estas seguro?',
-                        text: "registreras un prestamo",
+                        text: "registraras un prestamo",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#ff7800',
@@ -187,9 +175,27 @@ export function AuthProvider({ children }) {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             navigate('/', { replace: true })
+                            //agregar datos de la solicitud de Prestamo
+                            getDownloadURL(ref(storage, `prestamos/${NombreComprobante}`))
+                                .then((url) => {
+
+                                    addDoc(collection(db, "prestamos"), {
+                                        nombre: Nombre,
+                                        profesión: Profesión,
+                                        dni: DNI,
+                                        ruc: RUC,
+                                        ingresos: Ingresos,
+                                        comprobante: NombreComprobante,
+                                        celular: Celular,
+                                        monto: Monto,
+                                        estado: "En proceso",
+                                        pago: "",
+                                        uid: currentUser,
+                                        url: url
+                                    });
+                                })
                         }
                     })
-                    setloading(false)
                 })
 
                 .catch(() => {
@@ -229,17 +235,17 @@ export function AuthProvider({ children }) {
         }).then((result) => {
             if (result.isConfirmed) {
 
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Se rechazo el prestamo'
-                    })
-                    async function cambioestado() {
-                        await updateDoc(doc(db, "prestamos", id), {
-                            estado: "Rechazado",
-                            pago: ""
-                        });
-                    }
-                    cambioestado()
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Se rechazo el prestamo'
+                })
+                async function cambioestado() {
+                    await updateDoc(doc(db, "prestamos", id), {
+                        estado: "Rechazado",
+                        pago: ""
+                    });
+                }
+                cambioestado()
             }
         })
     }
@@ -332,7 +338,7 @@ export function AuthProvider({ children }) {
         })
     }
 
-    async function RechazarCapital(uid,nombre,monto,id) {
+    async function RechazarCapital(uid, nombre, monto, id) {
         Toast.fire({
             icon: 'warning',
             title: 'Se notificó al cobrador'

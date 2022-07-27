@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../Firebase/AuthContext';
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 import FirebaseApp from "../Firebase/FirebaseApp";
+import { Link } from 'react-router-dom';
 const db = getFirestore(FirebaseApp);
+// Create a reference with an initial file path and name
+const storage = getStorage();
 
 const ConsultaPrestamos = () => {
     const { cambiarEstadoPrestamo, RechazarPrestamo } = useAuth()
 
     const [PrestamosPendientes, setPrestamosPendientes] = useState([]);
+
+
 
     function Aprobar(monto, id, uid, nombre) {
         cambiarEstadoPrestamo(monto, id, uid, nombre)
@@ -34,6 +40,7 @@ const ConsultaPrestamos = () => {
                 setPrestamosPendientes(info);
             })
         }
+
 
         listarPrestamosPendientes()
 
@@ -67,6 +74,7 @@ const ConsultaPrestamos = () => {
                                         {info.ruc ? <p>RUC: <label>{info.ruc}</label></p> : <></>}
                                         <p>Ingresos: <label>S/{info.ingresos}</label></p>
                                         <p>Prestamo: <label>S/{info.monto}</label></p>
+                                        <a href={info.url} download className='btn-prestamo'><p>Comprobante: {info.comprobante}</p></a>
                                     </div>
                                     <div className="col-sm-3 out-div-estado">
                                         <div className='in-div-estado'>
@@ -85,6 +93,9 @@ const ConsultaPrestamos = () => {
                                             </div>
                                             <div className="Estado-Pago centrar">
                                                 <button className="centrar boton-login boton-login2 btn btn-primary mt-3" onClick={() => { Rechazar(info.id) }}>Rechazar</button>
+                                            </div>
+                                            <div className="Estado-Pago centrar">
+                                                <Link to={`/prestamos/${info.uid}`} className="centrar boton-login boton-login2 btn btn-primary mt-3" >Ver prestamos</Link>
                                             </div>
                                         </div>
                                     </div>
